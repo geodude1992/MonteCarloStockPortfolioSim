@@ -1,16 +1,28 @@
-# This is a sample Python script.
+"""
+Implement the Monte Carlo Method to simulate a stock Portfolio
+"""
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import datetime as dt
+from pandas_datareader import data as pdr
+import yfinance as yf
+yf.pdr_override() 
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#import data
+def get_data(stocks, start, end):
+    stockData = pdr.get_data_yahoo(stocks, start, end)
+    stockData = stockData['Close']
+    returns = stockData.pct_change()
+    meanReturns = returns.mean()
+    covarMatrix = returns.cov()
+    return meanReturns, covarMatrix
 
+stockList = ['GME', 'NVDA', 'TSLA', 'AAPL']
+stocks = [stock for stock in stockList]
+endDate = dt.datetime.now()
+startDate = endDate - dt.timedelta(days=300)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+meanReturns, covarMatrix = get_data(stocks, startDate, endDate)
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+print(meanReturns)
